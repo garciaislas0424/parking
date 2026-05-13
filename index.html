@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Parking Express</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f3f4f6;
+    padding:20px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+    color:#111827;
+    margin-bottom:10px;
+}
+
+.subtitulo{
+    text-align:center;
+    color:#666;
+    margin-bottom:20px;
+}
+
+.fecha{
+    text-align:center;
+    font-weight:bold;
+    color:#444;
+    margin-bottom:20px;
+}
+
+input,
+select{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#16a34a;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#15803d;
+}
+
+.preview{
+    margin-top:20px;
+    text-align:center;
+}
+
+.preview img{
+    width:100%;
+    max-height:300px;
+    object-fit:cover;
+    border-radius:15px;
+    border:2px solid #ddd;
+}
+
+.aviso{
+    margin-top:15px;
+    background:#f1f5f9;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    color:#111827;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>🚗 Parking Express</h1>
+
+        <p class="subtitulo">
+            Registro rápido de estacionamiento
+        </p>
+
+        <div class="fecha" id="fecha"></div>
+
+        <!-- NOMBRE -->
+        <input type="text"
+        id="nombre"
+        placeholder="Nombre del cliente">
+
+        <!-- TELEFONO -->
+        <input type="tel"
+        id="telefono"
+        placeholder="Número telefónico">
+
+        <!-- TIPO UNIDAD -->
+        <select id="unidad">
+
+            <option value="">
+                Selecciona tipo de unidad
+            </option>
+
+            <option value="Carro">
+                Carro
+            </option>
+
+            <option value="Camioneta">
+                Camioneta
+            </option>
+
+            <option value="Moto">
+                Moto
+            </option>
+
+        </select>
+
+        <!-- FOTO -->
+        <div class="aviso">
+            📸 TOMAR FOTO FRONTAL DE PLACAS
+        </div>
+
+        <input
+        type="file"
+        id="foto"
+        accept="image/*"
+        capture="environment">
+
+        <!-- VISTA PREVIA -->
+        <div class="preview">
+
+            <img
+            id="preview"
+            src=""
+            style="display:none;">
+
+        </div>
+
+        <!-- BOTON -->
+        <button onclick="enviarWhatsApp()">
+            Enviar Registro vía WhatsApp
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+// FECHA Y HORA
+function actualizarFecha(){
+
+    const fecha =
+    new Date().toLocaleString("es-MX",{
+
+        dateStyle:"full",
+        timeStyle:"short"
+
+    });
+
+    document.getElementById("fecha")
+    .innerHTML = fecha;
+
+}
+
+actualizarFecha();
+
+// VISTA PREVIA FOTO
+const fotoInput =
+document.getElementById("foto");
+
+fotoInput.addEventListener("change",function(){
+
+    const archivo =
+    this.files[0];
+
+    if(archivo){
+
+        const lector =
+        new FileReader();
+
+        lector.onload = function(e){
+
+            const preview =
+            document.getElementById("preview");
+
+            preview.src =
+            e.target.result;
+
+            preview.style.display =
+            "block";
+
+        };
+
+        lector.readAsDataURL(archivo);
+
+    }
+
+});
+
+// ENVIAR WHATSAPP
+function enviarWhatsApp(){
+
+    const nombre =
+    document.getElementById("nombre")
+    .value.trim();
+
+    const telefono =
+    document.getElementById("telefono")
+    .value.trim();
+
+    const unidad =
+    document.getElementById("unidad")
+    .value;
+
+    const foto =
+    document.getElementById("foto")
+    .files[0];
+
+    if(nombre === "" ||
+       telefono === "" ||
+       unidad === "" ||
+       !foto){
+
+        alert(
+        "Completa todos los campos y toma la foto"
+        );
+
+        return;
+
+    }
+
+    const fecha =
+    new Date().toLocaleString();
+
+    // NUMERO WHATSAPP
+    const numero =
+    "5217712343532";
+
+    // MENSAJE
+    const mensaje =
+
+`🚗 *NUEVO REGISTRO PARKING* %0A%0A
+
+👤 Nombre:
+${nombre}%0A
+
+📞 Teléfono:
+${telefono}%0A
+
+🚘 Unidad:
+${unidad}%0A
+
+🕒 Fecha y hora:
+${fecha}%0A%0A
+
+📸 Foto frontal de placas adjunta`;
+
+    // ABRIR WHATSAPP
+    window.open(
+
+`https://wa.me/${numero}?text=${mensaje}`,
+
+"_blank"
+
+);
+
+    alert(
+
+"WhatsApp se abrirá ahora. Después adjunta manualmente la foto de placas."
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>
